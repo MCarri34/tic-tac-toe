@@ -1,0 +1,3 @@
+[INFO] Player made a move.
+[WARN] Invalid move attempted.
+[ERROR] Game state corrupted.

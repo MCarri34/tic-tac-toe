@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "imgui/imgui.h"
 #include "classes/TicTacToe.h"
+#include "Logger.h"
 
 namespace ClassGame {
         //
@@ -16,6 +17,8 @@ namespace ClassGame {
         //
         void GameStartUp() 
         {
+            Logger::GetInstance().Initialize("GameLog.txt");
+
             game = new TicTacToe();
             game->setUpBoard();
         }
@@ -29,6 +32,68 @@ namespace ClassGame {
                 ImGui::DockSpaceOverViewport();
 
                 //ImGui::ShowDemoWindow();
+
+                ImGui::Begin("GameWindow");
+                game->drawFrame();
+                ImGui::End();
+
+                // Game Control window (ALWAYS renders)
+                ImGui::Begin("Game Control");
+
+                if (ImGui::Button("Log Game Event"))
+                    Logger::GetInstance().Log(LogLevel::Info, "Player made a move.");
+
+                ImGui::SameLine();
+                if (ImGui::Button("Log Warning"))
+                    Logger::GetInstance().Log(LogLevel::Warning, "Invalid move attempted.");
+
+                ImGui::SameLine();
+                if (ImGui::Button("Log Error"))
+                    Logger::GetInstance().Log(LogLevel::Error, "Game state corrupted.");
+
+                ImGui::End();
+
+
+                // Game Log window
+                ImGui::Begin("Game Log");
+
+                if (ImGui::Button("Clear"))
+                    Logger::GetInstance().Clear();
+
+                ImGui::SameLine();
+
+                static int levelIndex = 0;
+                const char* levels[] = { "Info", "Warning", "Error" };
+
+                // Sync dropdown with logger state
+                LogLevel currentLevel = Logger::GetInstance().GetConsoleLevel();
+                levelIndex = (currentLevel == LogLevel::Info) ? 0 :
+                            (currentLevel == LogLevel::Warning) ? 1 : 2;
+
+                if (ImGui::Combo("Log Level", &levelIndex, levels, IM_ARRAYSIZE(levels)))
+                {
+                    Logger::GetInstance().SetConsoleLevel(
+                        (levelIndex == 0) ? LogLevel::Info :
+                        (levelIndex == 1) ? LogLevel::Warning :
+                                            LogLevel::Error
+                    );
+                }
+
+                ImGui::Separator();
+
+                ImGui::BeginChild("LogScroll", ImVec2(0, 0), true);
+
+                LogLevel minLevel = Logger::GetInstance().GetConsoleLevel();
+                for (const auto& entry : Logger::GetInstance().GetEntries())
+                {
+                    if (entry.level < minLevel)
+                        continue;
+
+                    ImGui::TextUnformatted(entry.text.c_str());
+                }
+
+                ImGui::EndChild();
+                ImGui::End();
 
                 if (!game) return;
                 if (!game->getCurrentPlayer()) return;
@@ -52,6 +117,7 @@ namespace ClassGame {
                 ImGui::Begin("GameWindow");
                 game->drawFrame();
                 ImGui::End();
+
         }
 
         //
@@ -65,10 +131,12 @@ namespace ClassGame {
             {
                 gameOver = true;
                 gameWinner = winner->playerNumber();
+                Logger::GetInstance().Log(LogLevel::Info, "Game won by a player.");
             }
             if (game->checkForDraw()) {
                 gameOver = true;
                 gameWinner = -1;
+                Logger::GetInstance().Log(LogLevel::Warning, "Game ended in a draw.");
             }
         }
 }
