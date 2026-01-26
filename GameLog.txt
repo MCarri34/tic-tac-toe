@@ -1,3 +1,61 @@
 [INFO] Player made a move.
 [WARN] Invalid move attempted.
 [ERROR] Game state corrupted.
+[INFO] TicTacToe started
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Game reset
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Game reset
+[INFO] TicTacToe started
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Player made a move.
+[WARN] Invalid move attempted.
+[WARN] Invalid move attempted.
+[ERROR] Game state corrupted.
+[INFO] Game reset
+[INFO] Saved game state
+[INFO] Loaded game state
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Game reset
+[INFO] Loaded game state
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Game reset
+[INFO] TicTacToe started
+[INFO] Winner Detected.
+[INFO] Game reset
+[INFO] Winner Detected.
+[INFO] Loaded game state
+[INFO] Winner Detected.
+[INFO] Game reset
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Winner Detected.
+[INFO] Game reset
+[INFO] TicTacToe started
+[WARN] Draw Detected.
+[INFO] Game reset
