@@ -24,8 +24,8 @@
 // The rest of the routines are written as “comment-first” TODOs for you to complete.
 // -----------------------------------------------------------------------------
 
-const int AI_PLAYER   = 1;      // index of the AI player (O)
-const int HUMAN_PLAYER= 0;      // index of the human player (X)
+const int AI_PLAYER   = -1;      // index of the AI player (O)
+const int HUMAN_PLAYER= 1;      // index of the human player (X)
 
 TicTacToe::TicTacToe()
 {
@@ -43,7 +43,7 @@ Bit* TicTacToe::PieceForPlayer(const int playerNumber)
 {
     // depending on playerNumber load the "x.png" or the "o.png" graphic
     Bit *bit = new Bit();
-    bit->LoadTextureFromFile(playerNumber == 1 ? "x.png" : "o.png");
+    bit->LoadTextureFromFile(playerNumber == 0 ? "x.png" : "o.png"); // Player 0 (Human) = X, Player 1 (AI) = O
     bit->setOwner(getPlayerAt(playerNumber));
     return bit;
 }
@@ -61,6 +61,7 @@ void TicTacToe::setUpBoard()
 
     // Set up a two-player game.
     setNumberOfPlayers(2);
+    setAIPlayer(1); // Let player 2 be the AI.
 
     // Tell the engine that the board is a 3x3 grid so mouse picking works.
     _gameOptions.rowX = 3;
@@ -341,8 +342,89 @@ void TicTacToe::setStateString(const std::string &s)
 //
 // this is the function that will be called by the AI
 //
-void TicTacToe::updateAI() 
+void TicTacToe::updateAI()
 {
-    // we will implement the AI in the next assignment!
+    std::string s = stateString();
+
+    int bestScore = -100000;
+    int bestMove = -1;
+
+    // AI is '2' (second player)
+    for (int i = 0; i < 9; ++i)
+    {
+        if (s[i] != '0')
+            continue;
+
+        s[i] = '2';                             // try AI move
+        int score = negamax(s, '1', 1);         // next turn is HUMAN (player = +1)
+        s[i] = '0';
+
+        if (score > bestScore)
+        {
+            bestScore = score;
+            bestMove = i;
+        }
+    }
+
+    if (bestMove != -1)
+    {
+        int row = bestMove / 3;
+        int col = bestMove % 3;
+
+        actionForEmptyHolder(&_grid[row][col]);
+        endTurn(); // Game.cpp does NOT endTurn() for AI, so this stays here
+    }
 }
 
+
+int TicTacToe::negamax(const std::string& state, char turnChar, int depth)
+{
+    static const int wins[8][3] = {
+        {0,1,2},{3,4,5},{6,7,8},
+        {0,3,6},{1,4,7},{2,5,8},
+        {0,4,8},{2,4,6}
+    };
+
+    // Terminal winner check
+    for (const auto& w : wins)
+    {
+        char a = state[w[0]];
+        if (a != '0' && a == state[w[1]] && a == state[w[2]])
+        {
+            // Score from AI perspective, prefer faster outcomes
+            if (a == '2') return 10 - depth;      // AI win
+            else          return -(10 - depth);   // Human win
+        }
+    }
+
+    // Draw check
+    bool full = true;
+    for (char c : state)
+    {
+        if (c == '0') { full = false; break; }
+    }
+    if (full) return 0;
+
+    // Recurrence: maximize for AI, minimize for human
+    bool maximizing = (turnChar == '2');
+    int best = maximizing ? -100000 : 100000;
+
+    for (int i = 0; i < 9; ++i)
+    {
+        if (state[i] != '0')
+            continue;
+
+        std::string next = state;
+        next[i] = turnChar;
+
+        char nextTurn = (turnChar == '1') ? '2' : '1';
+        int score = negamax(next, nextTurn, depth + 1);
+
+        if (maximizing)
+            best = (score > best) ? score : best;
+        else
+            best = (score < best) ? score : best;
+    }
+
+    return best;
+}
