@@ -1,2 +1,5 @@
-# Design Process
+# Design Process 1
 I built this project by following the provided instuctions on `TicTacToe.cpp` and focusing on getting the Tic Tac Toe game working step by step. I asked the professor on Discord whether we were supposed to use the older or newer version of `Application.cpp` so I knew where to put my functional Logger code.Transfering the Logger code was confusing since I didn't realize I needed to put it above the TicTacToe code that was in the newer one. While working on `TicTacToe.cpp`, I ran into a bug where only O’s were being placed, so I had a friend look over the file and help me fix it. This project was made on **Windows**.
+
+# Design Process 2: AI
+The AI uses a negamax algorithm to look ahead at possible moves and decide what to do next. It plays as the second player and tries to win whenever possible, block the human player when needed, or force a draw. Getting the AI to work correctly took a few tries, especially with scoring and turn order, but fixing how the game evaluated future board states made the AI play properly. The final AI plays better than random and behaves as expected for tic-tac-toe.
